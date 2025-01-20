@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.app {
+  display: flex;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #1a202c;
+  color: white;
+  height: 100vh;
+  padding: 20px;
+}
+
+.sidebar .logo {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar {
+  height: 60px;
+  background: #f7fafc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.stats-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.stats-card {
+  background: #f7fafc;
+  padding: 20px;
+  border-radius: 10px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.charts-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.line-chart,
+.pie-chart {
+  flex: 1;
+  height: 300px;
+}
