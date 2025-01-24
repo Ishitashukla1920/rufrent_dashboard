@@ -1,18 +1,16 @@
 import React from "react";
 import Sidebar from "./components/Sidebar";
-import Topbar from "./components/Topbar";
-import Dashboard from "./components/Dashboard";
+import { Header } from "./components/Header";
+import Dashboard from "./components/TableDropdown";
 import "./index.css";
 
 const App = () => {
   return (
-    <div className="app">
+    <div className="flex h-screen">
       <Sidebar />
-      <div className="main-content">
-        <Topbar />
-        <Dashboard />
+     
       </div>
-    </div>
+  
   );
 };
 
