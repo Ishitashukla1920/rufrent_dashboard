@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { FaHome, FaUsers, FaTable, FaChartPie, FaBars } from "react-icons/fa";
-import Communities from "./Communities"; // Import Communities page
-import Dashboard from "./TableDropdown";
-import TableDropdown from "./DbTables";
+import Dashboard from "./Dashboard"; // Corrected import for Dashboard component
+import TableDropdown from "./DbTables"; // Ensuring the path and export are accurate
+import Communities from "./Communities"; // Added missing import for Communities
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activePage, setActivePage] = useState("Dashboard"); // Track the active page
+  const [activePage, setActivePage] = useState(""); // Track the active page
 
   // Toggle sidebar visibility
   const toggleSidebar = () => {
@@ -103,13 +103,13 @@ const Sidebar = () => {
 
       {/* Main Content Area */}
       <div className="flex-1 p-6">
-        {activePage === "Dashboard" && <Dashboard/>}
+        {activePage === "Dashboard" && <Dashboard />}
         {activePage === "Property Listings" && <h1>Property Listings</h1>}
         {activePage === "Requests" && <h1>Requests</h1>}
         {activePage === "Staff Assignment" && <h1>Staff Assignment</h1>}
         {activePage === "Communities" && <Communities />} {/* Communities Page */}
         {activePage === "User Management" && <h1>User Management</h1>}
-        {activePage === "DB Tables" && <TableDropdown/>}
+        {activePage === "DB Tables" && <TableDropdown />}
         {activePage === "Reports" && <h1>Reports</h1>}
       </div>
     </div>
