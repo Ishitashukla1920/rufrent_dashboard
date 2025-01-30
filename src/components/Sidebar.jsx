@@ -19,7 +19,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex h-screen overflow-hidden">
       {/* Sidebar Toggle Button */}
       <button
         className="md:hidden text-white bg-[#1a202c] p-3 focus:outline-none"
@@ -30,9 +30,7 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-screen bg-[#1a202c] text-white font-poppins transition-transform duration-300 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } w-64 md:translate-x-0 md:static md:w-64 p-6`}
+        className={`fixed top-0 left-0 h-full bg-[#1a202c] text-white font-poppins transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"} w-64 md:translate-x-0 md:static md:w-64 p-6`}
       >
         {/* Logo */}
         <div className="text-2xl font-bold mb-4">LOGO</div>
@@ -102,12 +100,12 @@ const Sidebar = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-6 ml-64 md:ml-0 overflow-y-auto h-screen">
         {activePage === "Dashboard" && <Dashboard />}
         {activePage === "Property Listings" && <h1>Property Listings</h1>}
         {activePage === "Requests" && <h1>Requests</h1>}
         {activePage === "Staff Assignment" && <h1>Staff Assignment</h1>}
-        {activePage === "Communities" && <Communities />} {/* Communities Page */}
+        {activePage === "Communities" && <Communities />}
         {activePage === "User Management" && <h1>User Management</h1>}
         {activePage === "DB Tables" && <TableDropdown />}
         {activePage === "Reports" && <h1>Reports</h1>}
