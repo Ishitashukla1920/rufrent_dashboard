@@ -37,19 +37,22 @@ const Communities = () => {
   const amenitiesFormRef = useRef(null);
   const landmarksFormRef = useRef(null);
 
-const[nameCommunity, setNameCommunity]=useState("");
-const [mapUrl, setMapUrl] = useState("");
-const [totalArea, setTotalArea] = useState("");
-const [openArea, setOpenArea] = useState("");
-const [nblocks, setNBlocks] = useState("");
-const [nfloorsPerBlock, setNFloorsPerBlock] = useState("");
-const [nhousesPerFloor, setNHousesPerFloor] = useState("");
-const [address, setAddress] = useState("");
-const [majorArea, setMajorArea] = useState("");
-const [totflats, setTotFlats] = useState("");
-// const [status, setStatus] = useState("");  // This should be a number (1 for completed, 0 for ongoing)
-const [rstatus, setRStatus] = useState("");
-const [image, setImage] = useState(null);
+  const [nameCommunity, setNameCommunity] = useState("");
+  const [mapUrl, setMapUrl] = useState("");
+  const [totalArea, setTotalArea] = useState("");
+  const [openArea, setOpenArea] = useState("");
+  const [nblocks, setNBlocks] = useState("");
+  const [nfloorsPerBlock, setNFloorsPerBlock] = useState("");
+  const [nhousesPerFloor, setNHousesPerFloor] = useState("");
+  const [address, setAddress] = useState("");
+  const [majorArea, setMajorArea] = useState("");
+  const [totflats, setTotFlats] = useState("");
+  // const [status, setStatus] = useState("");  // This should be a number (1 for completed, 0 for ongoing)
+  const [rstatus, setRStatus] = useState("");
+  
+  // Note: renamed "image" to "images" and the setter to "setImages"
+  const [images, setImages] = useState(null);
+
   // --- Data Fetching Effects ---
 
   // Fetch cities
@@ -238,7 +241,6 @@ const [image, setImage] = useState(null);
       .then((response) => response.json())
       .then((data) => {
         if (data.message && data.message.includes("successfully")) {
-          //alert(data.message);
           alert("landmark saved successfully");
         } else {
           alert("Failed to save landmarks.");
@@ -250,34 +252,6 @@ const [image, setImage] = useState(null);
       });
   };
 
- /* const handleSaveCommunity = () => {
-    if (!selectedCommunityForCommunity) {
-      alert("Please select a community from the dropdown.");
-      return;
-    }
-    const payload = {
-      tableName: "st_community",
-      fieldNames: "name",
-      fieldValues: selectedCommunityForCommunity,
-    };
-    fetch("http://localhost:5000/api/addNewRecord", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.message && data.message.includes("successfully")) {
-          alert("Community added successfully!");
-        } else {
-          alert("Failed to add community.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error adding community:", error);
-        alert("An error occurred while adding the community.");
-      });
-  };*/
   // In your handleSaveCommunity function:
   const handleSaveCommunity = () => {
     // Validate required fields
@@ -291,43 +265,39 @@ const [image, setImage] = useState(null);
     }
   
     // Build the communityData object in the format expected by your backend.
-    // Note: status and rstatus are kept as strings.
     const communityData = {
-      name: nameCommunity,       // e.g. "Green Valley"
-      map_url: mapUrl,                           // e.g. "https://maps.google.com/sample"
-      total_area: Number(totalArea),             // e.g. 5000
-      open_area: Number(openArea),               // e.g. 2000
-      nblocks: Number(nblocks),                  // e.g. 5
+      name: nameCommunity,         // e.g. "Green Valley"
+      map_url: mapUrl,             // e.g. "https://maps.google.com/sample"
+      total_area: Number(totalArea), // e.g. 5000
+      open_area: Number(openArea),   // e.g. 2000
+      nblocks: Number(nblocks),      // e.g. 5
       nfloors_per_block: Number(nfloorsPerBlock),  // e.g. 10
       nhouses_per_floor: Number(nhousesPerFloor),  // e.g. 4
-      address: address,                          // e.g. "123, Main Street, City"
-      major_area: majorArea,                     // e.g. "Downtown"
-      builder_id: Number(selectedBuilder),       // e.g. 101 (from the builder dropdown)
-      totflats: Number(totflats),                // e.g. 200
-      status: status,                            // e.g. "active"
-      rstatus: rstatus                           // e.g. "1"
+      address: address,            // e.g. "123, Main Street, City"
+      major_area: majorArea,       // e.g. "Downtown"
+      builder_id: Number(selectedBuilder), // e.g. 101 (from the builder dropdown)
+      totflats: Number(totflats),  // e.g. 200
+      status: status,              // e.g. "active"
+      rstatus: rstatus             // e.g. "1"
     };
   
-    // Log the JSON string to check its structure
     console.log("Sending communityData:", JSON.stringify(communityData));
   
     // Create a FormData object and append communityData as a JSON string
     const formData = new FormData();
     formData.append("communityData", JSON.stringify(communityData));
   
-    // Append image if one is selected
-    if (image) {
-      formData.append("image", image);
+    // Append file if one is selected, using the key "images"
+    if (images) {
+      formData.append("images", images);
     }
   
-    // Make the API request
     fetch("http://localhost:5000/api/createCommunity", {
       method: "POST",
       body: formData,
     })
       .then((response) => {
         if (!response.ok) {
-          // If the response is not OK, read the response as text and throw an error
           return response.text().then((text) => {
             throw new Error(text);
           });
@@ -346,8 +316,6 @@ const [image, setImage] = useState(null);
         alert("An error occurred while adding the community.");
       });
   };
-  
-
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">
@@ -437,119 +405,113 @@ const [image, setImage] = useState(null);
       </div>
       
       {/* Community Form Section */}
-      
-{showCommunityForm && (
-  <div ref={communityFormRef} className="mb-8 p-6 border rounded-lg shadow-sm bg-gray-50">
-    <h3 className="text-xl font-semibold mb-4">Community Details</h3>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <input
-  type="text"
-  placeholder="Enter Community Name"
-  className="border p-2 rounded"
-  value={nameCommunity}
-  onChange={(e) => setNameCommunity(e.target.value)}
-/>
+      {showCommunityForm && (
+        <div ref={communityFormRef} className="mb-8 p-6 border rounded-lg shadow-sm bg-gray-50">
+          <h3 className="text-xl font-semibold mb-4">Community Details</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="Enter Community Name"
+              className="border p-2 rounded"
+              value={nameCommunity}
+              onChange={(e) => setNameCommunity(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Enter Map URL"
+              className="border p-2 rounded"
+              value={mapUrl}
+              onChange={(e) => setMapUrl(e.target.value)}
+            />
+            <input
+              type="number"
+              placeholder="Enter Total Area"
+              className="border p-2 rounded"
+              value={totalArea}
+              onChange={(e) => setTotalArea(e.target.value)}
+            />
+            <input
+              type="number"
+              placeholder="Enter Open Area"
+              className="border p-2 rounded"
+              value={openArea}
+              onChange={(e) => setOpenArea(e.target.value)}
+            />
+            <input
+              type="number"
+              placeholder="Enter Number of Blocks"
+              className="border p-2 rounded"
+              value={nblocks}
+              onChange={(e) => setNBlocks(e.target.value)}
+            />
+            <input
+              type="number"
+              placeholder="Enter Floors per Block"
+              className="border p-2 rounded"
+              value={nfloorsPerBlock}
+              onChange={(e) => setNFloorsPerBlock(e.target.value)}
+            />
+            <input
+              type="number"
+              placeholder="Enter Houses per Floor"
+              className="border p-2 rounded"
+              value={nhousesPerFloor}
+              onChange={(e) => setNHousesPerFloor(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Enter Address"
+              className="border p-2 rounded"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Enter Major Area"
+              className="border p-2 rounded"
+              value={majorArea}
+              onChange={(e) => setMajorArea(e.target.value)}
+            />
+            <input
+              type="number"
+              placeholder="Enter Total Flats"
+              className="border p-2 rounded"
+              value={totflats}
+              onChange={(e) => setTotFlats(e.target.value)}
+            />
+            <select className="border p-2 rounded" value={status} onChange={(e) => setStatus(e.target.value)}>
+              <option value="">Select Status</option>
+              <option value="active">completed</option>
+              <option value="inactive">Ongoing</option>
+            </select>
+            <input
+              type="number"
+              placeholder="Enter RStatus"
+              className="border p-2 rounded"
+              value={rstatus}
+              onChange={(e) => setRStatus(e.target.value)}
+            />
+          </div>
 
-      
-      <input
-        type="text"
-        placeholder="Enter Map URL"
-        className="border p-2 rounded"
-        value={mapUrl}
-        onChange={(e) => setMapUrl(e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="Enter Total Area"
-        className="border p-2 rounded"
-        value={totalArea}
-        onChange={(e) => setTotalArea(e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="Enter Open Area"
-        className="border p-2 rounded"
-        value={openArea}
-        onChange={(e) => setOpenArea(e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="Enter Number of Blocks"
-        className="border p-2 rounded"
-        value={nblocks}
-        onChange={(e) => setNBlocks(e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="Enter Floors per Block"
-        className="border p-2 rounded"
-        value={nfloorsPerBlock}
-        onChange={(e) => setNFloorsPerBlock(e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="Enter Houses per Floor"
-        className="border p-2 rounded"
-        value={nhousesPerFloor}
-        onChange={(e) => setNHousesPerFloor(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Enter Address"
-        className="border p-2 rounded"
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Enter Major Area"
-        className="border p-2 rounded"
-        value={majorArea}
-        onChange={(e) => setMajorArea(e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="Enter Total Flats"
-        className="border p-2 rounded"
-        value={totflats}
-        onChange={(e) => setTotFlats(e.target.value)}
-      />
-      
-      <select className="border p-2 rounded" value={status} onChange={(e) => setStatus(e.target.value)}>
-        <option value="">Select Status</option>
-        <option value="active">completed</option>
-        <option value="inactive">Ongoing</option>
-      </select>
+          <div className="mt-6">
+            <label className="block mb-2 text-sm font-medium">Default Image</label>
+            <input
+              type="file"
+              className="border p-2 rounded w-full"
+              onChange={(e) => setImages(e.target.files[0])}
+            />
+          </div>
 
-      <input
-        type="number"
-        placeholder="Enter RStatus"
-        className="border p-2 rounded"
-        value={rstatus}
-        onChange={(e) => setRStatus(e.target.value)}
-      />
-    </div>
-
-    <div className="mt-6">
-      <label className="block mb-2 text-sm font-medium">Default Image</label>
-      <input
-        type="file"
-        className="border p-2 rounded w-full"
-        onChange={(e) => setImage(e.target.files[0])}
-      />
-    </div>
-
-    <div className="mt-6 flex justify-center">
-      <button
-        onClick={handleSaveCommunity}
-        className="bg-green-500 hover:bg-green-600 active:bg-green-700 text-white text-xs px-4 py-2 rounded-full shadow transition transform hover:scale-105"
-      >
-        Save Community
-      </button>
-    </div>
-  </div>
-)}
-
+          <div className="mt-6 flex justify-center">
+            <button
+              onClick={handleSaveCommunity}
+              className="bg-green-500 hover:bg-green-600 active:bg-green-700 text-white text-xs px-4 py-2 rounded-full shadow transition transform hover:scale-105"
+            >
+              Save Community
+            </button>
+          </div>
+        </div>
+      )}
       
       {/* Amenities Form Section */}
       {showAmenitiesForm && (
